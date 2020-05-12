@@ -34,7 +34,7 @@ b. 手动创建 ModelFilter：
 `mf.GetQuerySet(db).Find(&Foo).Error`
 
 
-### 4. 功能及使用方法
+### 4. 功能
 
 - 排序：`_order=xxx`, 前加 "-" 表示降序
 - 分页：`_limit=10&_offset=10`，不设置_limit返回所有记录，_offset默认为0
