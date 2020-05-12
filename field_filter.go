@@ -26,7 +26,9 @@ func (f *FieldFilter) SetFieldMatch(field string, value interface{}) {
 
 func (f *FieldFilter) FieldHandler(db *gorm.DB) *gorm.DB {
 	for k, v := range f.mapFieldMatch {
-		db = db.Where(fmt.Sprintf("`%s` = ?", k), v)
+		if f.isFilterFieldValid(k) {
+			db = db.Where(fmt.Sprintf("`%s` = ?", k), v)
+		}
 	}
 	return db
 }
