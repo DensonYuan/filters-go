@@ -1,4 +1,4 @@
-module filters
+module git.corp.kuaishou.com/yuandunsheng/filters
 
 go 1.14
 
