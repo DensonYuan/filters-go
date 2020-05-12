@@ -59,5 +59,6 @@ func (f *ModelFilter) GetQuerySet(db *gorm.DB) *gorm.DB {
 	db = f.FieldHandler(db)
 	db = f.ClauseHandler(db)
 	db = f.PaginationHandler(db)
+	db = db.Model(f.OrderFilter.Model)
 	return db
 }
