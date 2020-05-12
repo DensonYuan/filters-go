@@ -31,7 +31,7 @@ b. 手动创建 ModelFilter：
 
 示例：
 
-`mf.GetQuerySet(db)..Find(&Foo).Error`
+`mf.GetQuerySet(db).Find(&Foo).Error`
 
 
 ### 4. 功能及使用方法
