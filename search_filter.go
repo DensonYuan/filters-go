@@ -40,7 +40,7 @@ func (b *SearchFilter) isSearchFieldValid(field string) bool {
 	}
 	typeOfModel := reflect.TypeOf(b.Model)
 	for i := 0; i < typeOfModel.NumField(); i++ {
-		if field == typeOfModel.Field(i).Tag.Get("search") {
+		if ft := getFilterTag(typeOfModel.Field(i)); ft != nil && ft.Name == field && ft.Search {
 			return true
 		}
 	}
