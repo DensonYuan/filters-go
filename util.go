@@ -1,9 +1,3 @@
-/*
-@Time : 2020/5/12 12:00
-@Author : yuandunsheng
-@File : util
-*/
-
 package filters
 
 import (
