@@ -49,14 +49,25 @@ func StartAPIServer() {
 func ListHandler(c *gin.Context) {
 	filter := filters.InitModelFilter(c, User{})
 
+	//filter.Limit(10)
+
+
+	// 计数
+	var cnt int
+	e := filter.Count(DB, &cnt).Error
+	fmt.Println(e, cnt)
+
 	// 手动指定返回字段
 	//filter.Select("name,age")
 
-	// 手动指定匹配字段
-	//filter.SetFieldMatch("name", "tom")
+	//手动指定匹配字段
+	//filter.Match("name", "tom")
 
 	// 手动指定复杂查询语句
 	//filter.Where("name = ? AND age > ?", "tom", 12)
+	//var cnt int
+	//e := filter.GetQuerySet(DB).Count(&cnt).Error
+	//fmt.Println(e)
 
 	var users []User
 	filter.GetQuerySet(DB).Find(&users)

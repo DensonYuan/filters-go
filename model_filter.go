@@ -5,7 +5,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"reflect"
-	"strconv"
 	"strings"
 )
 
@@ -17,8 +16,8 @@ type ModelFilter struct {
 	mapFieldMatch map[string]interface{}
 	query         string
 	args          []interface{}
-	limit         string
-	offset        string
+	limit         interface{}
+	offset        interface{}
 	fields        string
 }
 
@@ -36,7 +35,7 @@ func (f *ModelFilter) init(c *gin.Context, model interface{}) {
 	m := (map[string][]string)(c.Request.URL.Query())
 	for k, v := range m {
 		if !strings.HasPrefix(k, "_") && len(v) > 0 {
-			f.SetFieldMatch(k, v[0])
+			f.Match(k, v[0])
 		}
 	}
 }
@@ -73,13 +72,8 @@ func (f *ModelFilter) isOrderFieldValid(field string) bool {
 //////////////////////////////////////////////////////////////////////////////////////
 
 func (f *ModelFilter) paginationHandler(db *gorm.DB) *gorm.DB {
-	limit, err := strconv.Atoi(f.limit)
-	if err != nil {
-		limit = -1
-	}
-	offset, _ := strconv.Atoi(f.offset)
-	db = db.Limit(limit)
-	db = db.Offset(offset)
+	db = db.Limit(f.limit)
+	db = db.Offset(f.offset)
 	return db
 }
 

@@ -30,6 +30,14 @@ func (f *ModelFilter) GetQuerySet(db *gorm.DB) *gorm.DB {
 	return db
 }
 
+func (f *ModelFilter) Count(db *gorm.DB, value interface{}) *gorm.DB {
+	return f.GetQuerySet(db).Limit(-1).Offset(0).Count(value)
+}
+
+func (f *ModelFilter) Select(fields string) {
+	f.fields = fields
+}
+
 func (f *ModelFilter) Where(query string, args ...interface{}) {
 	if query != "" {
 		f.query = query
@@ -37,13 +45,26 @@ func (f *ModelFilter) Where(query string, args ...interface{}) {
 	}
 }
 
-func (f *ModelFilter) SetFieldMatch(field string, value interface{}) {
+func (f *ModelFilter) Match(field string, value interface{}) {
 	if f.mapFieldMatch == nil {
 		f.mapFieldMatch = make(map[string]interface{})
 	}
 	f.mapFieldMatch[field] = value
 }
 
-func (f *ModelFilter) Select(fields string) {
-	f.fields = fields
+func (f *ModelFilter) Order(value string) {
+	f.orderBy = value
+}
+
+func (f *ModelFilter) Limit(limit interface{}) {
+	f.limit = limit
+}
+
+func (f *ModelFilter) Offset(offset interface{}) {
+	f.offset = offset
+}
+
+func (f *ModelFilter) Search(fields string, value string) {
+	f.searchFields = fields
+	f.searchValue = value
 }
