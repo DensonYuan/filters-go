@@ -27,6 +27,7 @@ func (f *ModelFilter) GetQuerySet(db *gorm.DB) *gorm.DB {
 	db = f.clauseHandler(db)
 	db = f.paginationHandler(db)
 	db = f.selectHandler(db)
+	db = f.preloadHandler(db)
 	return db
 }
 
