@@ -166,5 +166,8 @@ func (f *ModelFilter) selectHandler(db *gorm.DB) *gorm.DB {
 //////////////////////////////////////////////////////////////////////////////////////
 
 func (f *ModelFilter) preloadHandler(db *gorm.DB) *gorm.DB {
-	return db.Preload(f.preloadColumn, f.preloadConditions...)
+	if f.preloadColumn != "" {
+		return db.Preload(f.preloadColumn, f.preloadConditions...)
+	}
+	return db
 }
