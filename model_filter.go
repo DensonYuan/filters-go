@@ -9,16 +9,18 @@ import (
 )
 
 type ModelFilter struct {
-	model         interface{}
-	orderBy       string
-	searchFields  string
-	searchValue   string
-	mapFieldMatch map[string]interface{}
-	query         string
-	args          []interface{}
-	limit         interface{}
-	offset        interface{}
-	fields        string
+	model             interface{}
+	orderBy           string
+	searchFields      string
+	searchValue       string
+	mapFieldMatch     map[string]interface{}
+	query             string
+	args              []interface{}
+	limit             interface{}
+	offset            interface{}
+	fields            string
+	preloadColumn     string
+	preloadConditions []interface{}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -159,4 +161,10 @@ func (f *ModelFilter) selectHandler(db *gorm.DB) *gorm.DB {
 		return db.Select(f.fields)
 	}
 	return db
+}
+
+//////////////////////////////////////////////////////////////////////////////////////
+
+func (f *ModelFilter) preloadHandler(db *gorm.DB) *gorm.DB {
+	return db.Preload(f.preloadColumn, f.preloadConditions...)
 }
