@@ -46,10 +46,8 @@ func (f *ModelFilter) Select(fields string) *ModelFilter {
 }
 
 func (f *ModelFilter) Where(query string, args ...interface{}) *ModelFilter {
-	if query != "" {
-		f.query = query
-		f.args = args
-	}
+	f.queryList = append(f.queryList, query)
+	f.argsList = append(f.argsList, args)
 	return f
 }
 

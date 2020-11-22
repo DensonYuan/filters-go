@@ -6,14 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"net/http"
 )
 
 var DB *gorm.DB
 
 type User struct {
 	Name  string `filter:"name:name;order;search;match"`
-	Age   int    `filter:"name:age;order"`
+	Age   int    `filter:"name:age;order;match"`
 	Email string `filter:"name:email;search"`
 }
 
@@ -53,9 +52,9 @@ func ListHandler(c *gin.Context) {
 
 
 	// 计数
-	var cnt int
-	e := filter.Count(DB, &cnt).Error
-	fmt.Println(e, cnt)
+	//var cnt int
+	//e := filter.Count(DB, &cnt).Error
+	//fmt.Println(e, cnt)
 
 	// 手动指定返回字段
 	//filter.Select("name,age")
@@ -64,12 +63,15 @@ func ListHandler(c *gin.Context) {
 	//filter.Match("name", "tom")
 
 	// 手动指定复杂查询语句
-	//filter.Where("name = ? AND age > ?", "tom", 12)
-	//var cnt int
-	//e := filter.GetQuerySet(DB).Count(&cnt).Error
-	//fmt.Println(e)
+	filter.Where("name = ? AND age > ?", "tom", 12)
+	// 支持 where 链式调用
+	filter.Where("email LIKE '%@%'")
+	var cnt int
+	e := filter.GetQuerySet(DB).Count(&cnt).Error
+	fmt.Println(e)
 
-	var users []User
-	filter.GetQuerySet(DB).Find(&users)
-	c.JSON(http.StatusOK, users)
+
+	//var users []User
+	//filter.GetQuerySet(DB).Find(&users)
+	//c.JSON(http.StatusOK, users)
 }

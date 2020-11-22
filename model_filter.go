@@ -14,6 +14,8 @@ type ModelFilter struct {
 	searchFields      string
 	searchValue       string
 	mapFieldMatch     map[string]interface{}
+	queryList         []string
+	argsList          [][]interface{}
 	query             string
 	args              []interface{}
 	limit             interface{}
@@ -148,8 +150,8 @@ func (f *ModelFilter) isMatchFieldValid(field string) bool {
 //////////////////////////////////////////////////////////////////////////////////////
 
 func (f *ModelFilter) clauseHandler(db *gorm.DB) *gorm.DB {
-	if f.query != "" {
-		return db.Where(f.query, f.args...)
+	for i := range f.queryList {
+		db = db.Where(f.queryList[i], f.argsList[i]...)
 	}
 	return db
 }
