@@ -36,6 +36,11 @@ func (f *ModelFilter) GetCount(db *gorm.DB) (cnt int, err error) {
 	return
 }
 
+func (f *ModelFilter) Delete(db *gorm.DB) (err error) {
+	err = f.GetQuerySet(db).Delete(f.model).Error
+	return
+}
+
 func (f *ModelFilter) Count(db *gorm.DB, value interface{}) *gorm.DB {
 	return f.GetQuerySet(db).Limit(-1).Offset(0).Count(value)
 }
