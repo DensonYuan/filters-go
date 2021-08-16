@@ -1,6 +1,6 @@
 ### 1. 初始化
 
-a. 通过 gin.Context 初始化一个 ModelFilter：
+a. 从 gin.Context 初始化一个 ModelFilter：
 
 `func InitModelFilter(c *gin.Context, model interface{}) *ModelFilter`
 
@@ -16,7 +16,7 @@ b. 手动创建 ModelFilter：
 `filter:"name:xxx;order;search;match"`
 
 其中:
-  - "name:xxx": 必须，xxx 是 mysql 中的字段名称
+  - "name:xxx": 可选，xxx 是 db 中的字段名称，若不设置则默认为字段名的 snake_case
   - "order": 可选，表示允许以该字段排序
   - "search": 可选，表示允许以该字段搜索
   - "match": 可选，表示允许以该字段匹配
@@ -27,17 +27,20 @@ b. 手动创建 ModelFilter：
 
 函数：
 
-`func (f *ModelFilter) GetQuerySet(db *gorm.DB) *gorm.DB`
+`func (f *ModelFilter) Query(db *gorm.DB) *gorm.DB`
 
 示例：
 
-`mf.GetQuerySet(db).Find(&Foo).Error`
+`mf.Query(db).Find(&Foo).Error`
 
 
 ### 4. 功能
 
-- 排序：`_order=xxx`, 前加 "-" 表示降序
-- 分页：`_limit=10&_offset=10`，不设置_limit返回所有记录，_offset默认为0
-- 按字段搜索：`_search_fields=xxx,yyy&_search=vvv`, 多个字段用","分隔
-- 按字段过滤：`name=xxx&age=12`
+- 排序：`?_order=xxx`, 前加 "-" 表示降序
+- 分页：`?_limit=10&_offset=10`，不设置_limit返回所有记录，_offset默认为0
+- 按字段搜索：`?_search_fields=xxx,yyy&_search=vvv`, 多个字段用","分隔
+- 按字段过滤：`?name=xxx&age=12`
 - 自定义查询：对于复杂的查询逻辑，可以自定义查询语句
+
+其中，默认的功能性 key 为 _limit/_offset/_order/_search_fields/_search，可通过 SetGlobalConfig 函数修改默认 key
+非功能性 key 将被视为按字段匹配
