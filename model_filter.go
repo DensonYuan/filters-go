@@ -106,10 +106,6 @@ func (f *ModelFilter) initFunctionalFields() {
 			}
 		}
 	}
-
-	fmt.Println("order fields: ", f.allowOrderFields)
-	fmt.Println("match fields: ", f.allowMatchFields)
-	fmt.Println("search fields: ", f.allowSearchFields)
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -155,7 +151,7 @@ func (f *ModelFilter) searchHandler(db *gorm.DB) *gorm.DB {
 			clauses = append(clauses, fmt.Sprintf(format, field, f.searchValue))
 		}
 	}
-	db = db.Where("(" + strings.Join(clauses, " OR ") + ")")
+	db = db.Where(strings.Join(clauses, " OR "))
 	return db
 }
 

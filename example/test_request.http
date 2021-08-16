@@ -22,13 +22,13 @@ GET localhost/api/list/?_order=age
 ### _search_fields 指定搜索字段, 没有设置 search tag 的字段会被忽略
 ### _search 指定搜索关键字
 
-GET localhost/api/list/?_search_fields=name,email&_search=tom
+GET localhost/api/list/?_search_fields=name,email&_search=tom&age=22
 
 
 
 ### 不指定 _search_fields 则搜索所有配置了 seach tag 的字段
 
-GET localhost/api/list/?search=tom
+GET localhost/api/list/?_search=tom
 
 
 
