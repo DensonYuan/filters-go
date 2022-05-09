@@ -12,7 +12,7 @@ import (
 var DB *gorm.DB
 
 type User struct {
-	Name  string `json:"name,omitempty" filter:"order;search"`
+	Name  string `json:"name,omitempty" filter:"order;search;match"`
 	Age   int    `json:"age,omitempty" filter:"order;match"`
 	Email string `json:"email,omitempty" filter:"search;match"`
 }
@@ -55,7 +55,7 @@ func StartAPIServer() {
 }
 
 func ListHandler(c *gin.Context) {
-	filter := filters.InitModelFilter(c, User{})
+	filter := filters.New(User{}, c)
 
 	// 删除
 	//_ = filter.Limit(1).Delete(DB)
