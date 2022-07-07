@@ -7,28 +7,16 @@ import (
 
 // New 创建 ModelFilter, 可通过 gin.Context 初始化
 func New(model interface{}, c ...*gin.Context) *ModelFilter {
-	mf := &ModelFilter{model: model}
+	mf := &ModelFilter{
+		model: model,
+		canOrder: make(map[string]bool),
+		canMatch: make(map[string]bool),
+		canSearch: make(map[string]bool),
+	}
+	mf.initFunctionalFields()
 	if len(c) > 0 {
 		mf.initFromGinContext(c[0])
 	}
-	mf.initFunctionalFields()
-	return mf
-}
-
-// InitModelFilter 通过 gin.Context 初始化 ModelFilter
-// Deprecated
-func InitModelFilter(c *gin.Context, model interface{}) *ModelFilter {
-	mf := &ModelFilter{model: model}
-	mf.initFromGinContext(c)
-	mf.initFunctionalFields()
-	return mf
-}
-
-// NewModelFilter 创建 ModelFilter，传入 model 对象
-// Deprecated
-func NewModelFilter(model interface{}) *ModelFilter {
-	mf := &ModelFilter{model: model}
-	mf.initFunctionalFields()
 	return mf
 }
 
@@ -147,5 +135,38 @@ func (f *ModelFilter) Preload(query string, args ...interface{}) *ModelFilter {
 		f.preloads = make(map[string][]interface{})
 	}
 	f.preloads[query] = args
+	return f
+}
+
+// ExtendSearchFields 手动扩充可搜索字段，用于联表等场景
+func (f *ModelFilter) ExtendSearchFields(fields ...string) *ModelFilter {
+	if f.canSearch == nil {
+		f.canSearch = make(map[string]bool)
+	}
+	for _, field := range fields {
+		f.canSearch[field] = true
+	}
+	return f
+}
+
+// ExtendMatchFields 手动扩充可匹配字段，用于联表等场景
+func (f *ModelFilter) ExtendMatchFields(fields ...string) *ModelFilter {
+	if f.canMatch == nil {
+		f.canMatch = make(map[string]bool)
+	}
+	for _, field := range fields {
+		f.canMatch[field] = true
+	}
+	return f
+}
+
+// ExtendOrderFields 手动扩充可排序字段，用于联表等场景
+func (f *ModelFilter) ExtendOrderFields(fields ...string) *ModelFilter {
+	if f.canOrder == nil {
+		f.canOrder = make(map[string]bool)
+	}
+	for _, field := range fields {
+		f.canOrder[field] = true
+	}
 	return f
 }

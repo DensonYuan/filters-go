@@ -71,8 +71,12 @@ type Config struct {
 }
 
 func isFunctionalKey(key string) bool {
-	return key == globalConfig.LimitKey || key == globalConfig.OffsetKey || key == globalConfig.OrderKey ||
-		key == globalConfig.SearchFieldsKey || key == globalConfig.SearchValueKey || key == globalConfig.FieldsKey
+	return key == globalConfig.LimitKey ||
+		key == globalConfig.OffsetKey ||
+		key == globalConfig.OrderKey ||
+		key == globalConfig.SearchFieldsKey ||
+		key == globalConfig.SearchValueKey ||
+		key == globalConfig.FieldsKey
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -95,10 +99,6 @@ func (f *ModelFilter) initFromGinContext(c *gin.Context) {
 
 func (f *ModelFilter) initFunctionalFields() {
 	// TODO: 根据 model 加对应缓存，避免每次初始化，benchmark 测试下性能
-	f.canOrder = make(map[string]bool)
-	f.canMatch = make(map[string]bool)
-	f.canSearch = make(map[string]bool)
-
 	modelType := reflect.TypeOf(f.model)
 	for i := 0; i < modelType.NumField(); i++ {
 		field := modelType.Field(i)
