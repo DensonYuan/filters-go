@@ -55,6 +55,7 @@ func (f *ModelFilter) Query(db *gorm.DB) *gorm.DB {
 	db = f.paginationHandler(db)
 	db = f.selectHandler(db)
 	db = f.preloadHandler(db)
+	db = f.handleHandler(db)
 	return db
 }
 
@@ -62,6 +63,11 @@ func (f *ModelFilter) Query(db *gorm.DB) *gorm.DB {
 func (f *ModelFilter) Count(db *gorm.DB) (cnt int64, err error) {
 	err = f.Query(db).Limit(-1).Offset(-1).Count(&cnt).Error
 	return
+}
+
+func (f *ModelFilter) Handle(handler Handler) *ModelFilter {
+	f.handler = handler
+	return f
 }
 
 func (f *ModelFilter) Debug() *ModelFilter {
