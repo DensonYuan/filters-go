@@ -2,17 +2,19 @@ package filters
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-	"gorm.io/gorm/clause"
 	"reflect"
 	"strconv"
 	"strings"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 // ModelFilter exported model filter
 type ModelFilter struct {
 	model        interface{}
+	debug        bool
 	orderBy      string
 	limit        int
 	offset       int
@@ -40,7 +42,7 @@ type joinPair struct {
 	Args  []interface{}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------------------------------------------------------------------------------------
 
 const (
 	defaultLimitKey        = "_limit"
@@ -79,7 +81,7 @@ func isFunctionalKey(key string) bool {
 		key == globalConfig.FieldsKey
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------------------------------------------------------------------------------------
 
 func (f *ModelFilter) initFromGinContext(c *gin.Context) {
 	f.limit, _ = strconv.Atoi(c.DefaultQuery(globalConfig.LimitKey, "-1"))
@@ -89,8 +91,7 @@ func (f *ModelFilter) initFromGinContext(c *gin.Context) {
 	f.searchFields = c.DefaultQuery(globalConfig.SearchFieldsKey, "")
 	f.searchValue = c.DefaultQuery(globalConfig.SearchValueKey, "")
 
-	m := (map[string][]string)(c.Request.URL.Query())
-	for k, v := range m {
+	for k, v := range c.Request.URL.Query() {
 		if !isFunctionalKey(k) && len(v) > 0 && v[0] != "" {
 			f.Match(k, v[0])
 		}
@@ -120,7 +121,14 @@ func (f *ModelFilter) initFunctionalFields() {
 	}
 }
 
-//////////////////////////////////////////////////////////////////////////////////////
+// ---------------------------------------------------------------------------------------------------------------------
+
+func (f *ModelFilter) debugHandler(db *gorm.DB) *gorm.DB {
+	if f.debug {
+		db = db.Debug()
+	}
+	return db
+}
 
 func (f *ModelFilter) joinHandler(db *gorm.DB) *gorm.DB {
 	for _, p := range f.joins {
@@ -176,7 +184,6 @@ func (f *ModelFilter) matchHandler(db *gorm.DB) *gorm.DB {
 			var vs []string
 			if s, ook := v.(string); ook {
 				vs = strings.Split(s, ",")
-
 			}
 			if len(vs) > 1 {
 				db = db.Where(fmt.Sprintf("`%s` in (?)", k), vs)
