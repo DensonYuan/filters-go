@@ -8,9 +8,9 @@ import (
 // New 创建 ModelFilter, 可通过 gin.Context 初始化
 func New(model interface{}, c ...*gin.Context) *ModelFilter {
 	mf := &ModelFilter{
-		model: model,
-		canOrder: make(map[string]bool),
-		canMatch: make(map[string]bool),
+		model:     model,
+		canOrder:  make(map[string]bool),
+		canMatch:  make(map[string]bool),
 		canSearch: make(map[string]bool),
 	}
 	mf.initFunctionalFields()
@@ -46,6 +46,7 @@ func SetGlobalConfig(config *Config) {
 // Query 获取结果集合
 func (f *ModelFilter) Query(db *gorm.DB) *gorm.DB {
 	db = db.Model(f.model)
+	db = f.debugHandler(db)
 	db = f.joinHandler(db)
 	db = f.orderHandler(db)
 	db = f.searchHandler(db)
@@ -61,6 +62,11 @@ func (f *ModelFilter) Query(db *gorm.DB) *gorm.DB {
 func (f *ModelFilter) Count(db *gorm.DB) (cnt int64, err error) {
 	err = f.Query(db).Limit(-1).Offset(-1).Count(&cnt).Error
 	return
+}
+
+func (f *ModelFilter) Debug() *ModelFilter {
+	f.debug = true
+	return f
 }
 
 // Select 设置查询字段
