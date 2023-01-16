@@ -11,6 +11,8 @@ import (
 	"gorm.io/gorm/clause"
 )
 
+type Handler func(*gorm.DB) *gorm.DB
+
 // ModelFilter exported model filter
 type ModelFilter struct {
 	model        interface{}
@@ -25,6 +27,7 @@ type ModelFilter struct {
 	joins        []joinPair
 	matches      map[string]interface{}
 	preloads     map[string][]interface{}
+	handler      Handler
 
 	// 功能性字段集合 (排序/搜索/匹配)
 	canOrder  map[string]bool
@@ -122,6 +125,13 @@ func (f *ModelFilter) initFunctionalFields() {
 }
 
 // ---------------------------------------------------------------------------------------------------------------------
+
+func (f *ModelFilter) handleHandler(db *gorm.DB) *gorm.DB {
+	if f.handler != nil {
+		db = f.handler(db)
+	}
+	return db
+}
 
 func (f *ModelFilter) debugHandler(db *gorm.DB) *gorm.DB {
 	if f.debug {
