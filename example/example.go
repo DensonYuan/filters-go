@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"git.corp.kuaishou.com/deploy/filters-go"
+	"github.com/DensonYuan/filters-go"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"

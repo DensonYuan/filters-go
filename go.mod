@@ -1,4 +1,4 @@
-module git.corp.kuaishou.com/deploy/filters-go
+module github.com/DensonYuan/filters-go
 
 go 1.17
 
