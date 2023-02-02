@@ -1,4 +1,4 @@
-module git.corp.kuaishou.com/yuandunsheng/filters
+module git.corp.kuaishou.com/deploy/filters-go
 
 go 1.17
 
